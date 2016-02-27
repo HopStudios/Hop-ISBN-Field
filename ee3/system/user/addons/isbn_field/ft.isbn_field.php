@@ -1,14 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once PATH_THIRD."isbn_field/config.php";
-
 class Isbn_field_ft extends EE_Fieldtype {
 
-	var $info = array(
-		'name'	  => 'ISBN Field',
-		'version'   => ISBN_FIELD_VERSION
-	);
-
+    var $info = array(
+        'name'      => 'ISBN Field',
+        'version'   => '0.1'
+    );
+	
 	/**
 	 * Install Fieldtype
 	 *
@@ -27,40 +25,40 @@ class Isbn_field_ft extends EE_Fieldtype {
 	/*
 	 * Generates/displays a Global Settings page for the field
 	 */
-	function display_global_settings()
+    function display_global_settings()
 	{
 		$this->EE->lang->loadfile('isbn_field');
-
+		
 		$val = array_merge($this->settings, $_POST);
-
+		
 		$form = '';
 		$form .= '<h3>'.lang('global_settings_page_title').'</h3>';
-
+		
 		$form .= form_label(lang('glob_set_dyn_check_label'), 'dynamic_check').NBS.form_checkbox('dynamic_check', 'yes', $val["dynamic_check"] == 'yes').NBS.NBS.NBS.' ';
 		$form .= '<p>'.lang('glob_set_dyn_check_desc').'</p>';
-
+		
 		$form .= form_label(lang('glob_set_val_check_label'), 'validity_check').NBS.form_checkbox('validity_check', 'yes', $val["validity_check"] == 'yes').NBS.NBS.NBS.' ';
 		$form .= '<p>'.lang('glob_set_val_check_desc').'</p>';
-
+		
 		$form .= '<p>'.lang('glob_set_tags').'</p>';
-
+		
 		return $form;
 	}
-
+	
 	/*
 	 * Save the Global Settings of the field
 	 */
 	function save_global_settings()
 	{
 		$settings = $this->settings;
-
+		
 		$settings['dynamic_check'] = ee()->input->post('dynamic_check')=='yes' ? 'yes' : 'no';
-
+		
 		$settings['validity_check'] = ee()->input->post('validity_check')=='yes' ? 'yes' : 'no';
-
+		
 		return $settings;
 	}
-
+	
 	/*
 	 * Display settings on the Custom Fields add/edit page
 	 */
@@ -68,20 +66,20 @@ class Isbn_field_ft extends EE_Fieldtype {
 	{
 		$this->EE->lang->loadfile('isbn_field');
 		$dynamic_check_str	= isset($data['dynamic_check']) ? $data['dynamic_check'] : $this->settings['dynamic_check'];
-
+		
 		$validity_check_str	= isset($data['validity_check']) ? $data['validity_check'] : $this->settings['validity_check'];
-
+		
 		$this->EE->table->add_row(
 			lang('dynamic_check', 'dynamic_check'),
 			form_checkbox('dynamic_check', 'yes', $dynamic_check_str == 'yes')
 		);
-
+		
 		$this->EE->table->add_row(
 			lang('validity_check', 'validity_check'),
 			form_checkbox('validity_check', 'yes', $validity_check_str == 'yes')
 		);
 	}
-
+	
 	/*
 	 * Save settings of that particular custom field
 	 */
@@ -90,9 +88,9 @@ class Isbn_field_ft extends EE_Fieldtype {
 		//$settings = $this->settings;
 		$settings = array();
 		$settings['dynamic_check'] = ee()->input->post('dynamic_check')=='yes' ? 'yes' : 'no';
-
+		
 		$settings['validity_check'] = ee()->input->post('validity_check')=='yes' ? 'yes' : 'no';
-
+		
 		return $settings;
 	}
 
@@ -102,16 +100,16 @@ class Isbn_field_ft extends EE_Fieldtype {
 	 * @param $data Current field data, blank for new entries
 	 * @return String the field to display on Publish page
 	 */
-	function display_field($data)
-	{
+    function display_field($data)
+    {
 		$this->EE->lang->loadfile('isbn_field');
-
+		
 		$form = form_input(array(
-			'name'  => $this->field_name,
-			'id'	=> $this->field_id,
-			'value' => $data
-		));
-
+            'name'  => $this->field_name,
+            'id'    => $this->field_id,
+            'value' => $data
+        ));
+		
 		if ($this->settings['dynamic_check'] == "yes")
 		{
 			$this->EE->javascript->output('
@@ -167,10 +165,10 @@ class Isbn_field_ft extends EE_Fieldtype {
 				<p id="isbn_search_'.$this->field_id.'" style="display:none;">Search for <a href="#" id="isbn_search_link_'.$this->field_id.'" target="blank">ISBN ...</a></p>
 			</div>';
 		}
-
-		return $form;
-	}
-
+		
+        return $form;
+    }
+	
 	/*
 	 * Replace the field tag on a template
 	 */
@@ -178,7 +176,7 @@ class Isbn_field_ft extends EE_Fieldtype {
 	{
 		return $this->_process_tag_isbn($data, $params);
 	}
-
+	
 	function replace_isbn13($data, $params = array(), $tagdata = FALSE)
 	{
 		//if it's too short, we need te recalculate it
@@ -186,20 +184,20 @@ class Isbn_field_ft extends EE_Fieldtype {
 		{
 			$data = $this->_convert_isbn10_to_isbn13($data);
 		}
-
+		
 		return $this->_process_tag_isbn($data, $params);
 	}
-
+	
 	function replace_isbn10($data, $params = array(), $tagdata = FALSE)
 	{
 		if (strlen($data)==13)
 		{
 			$data = $this->_convert_isbn13_to_isbn10($data);
 		}
-
+		
 		return $this->_process_tag_isbn($data, $params);
 	}
-
+	
 	/*
 	 * Process the ISBN number with params placed on the tag
 	 * @return String the ISBN number modified
@@ -212,7 +210,7 @@ class Isbn_field_ft extends EE_Fieldtype {
 		}
 		return $isbn;
 	}
-
+	
 	function pretty_isbn_format($isbn)
 	{
 		if (strlen($isbn) == 10)
@@ -225,7 +223,7 @@ class Isbn_field_ft extends EE_Fieldtype {
 		}
 		return $isbn;
 	}
-
+	
 	function _convert_isbn10_to_isbn13($isbn)
 	{
 		if (strlen($isbn)==10 && preg_match("/^[0-9xX]*$/", $isbn))
@@ -269,13 +267,13 @@ class Isbn_field_ft extends EE_Fieldtype {
 		}
 		return $isbn;
 	}
-
+	
 	function _convert_isbn13_to_isbn10($isbn)
 	{
 		if (strlen($isbn)==13)
 		{
 			$isbn = substr($isbn, 3);
-
+			
 			//recalculate the checksum to replace the last digit
 			//Note : the last digit can be '10', in that case, it's replaced by an 'X'
 			$isbn = substr($isbn, 0, -1);
@@ -291,7 +289,7 @@ class Isbn_field_ft extends EE_Fieldtype {
 		}
 		return $isbn;
 	}
-
+	
 	/*
 	 * Validate the data once the entry is submited
 	 *
@@ -301,7 +299,7 @@ class Isbn_field_ft extends EE_Fieldtype {
 	function validate($data)
 	{
 		$this->EE->lang->loadfile('isbn_field');
-
+		
 		//if we need to validate the entered value
 		if ($this->settings['validity_check'] == "yes")
 		{
