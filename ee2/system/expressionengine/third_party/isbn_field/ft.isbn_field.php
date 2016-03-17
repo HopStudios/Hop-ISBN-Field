@@ -254,9 +254,7 @@ class Isbn_field_ft extends EE_Fieldtype {
 					$sum += $val;
 				}
 			}
-			//echo $sum;
 			$rem = $sum%10;
-			//echo $rem;
 			if ($rem==0)
 			{
 				$checksum = 0;
