@@ -29,7 +29,7 @@ class Isbn_field_ft extends EE_Fieldtype {
 	 */
 	function display_global_settings()
 	{
-		$this->EE->lang->loadfile('isbn_field');
+		ee()->lang->loadfile('isbn_field');
 
 		$val = array_merge($this->settings, $_POST);
 
@@ -66,17 +66,17 @@ class Isbn_field_ft extends EE_Fieldtype {
 	 */
 	function display_settings($data)
 	{
-		$this->EE->lang->loadfile('isbn_field');
+		ee()->lang->loadfile('isbn_field');
 		$dynamic_check_str	= isset($data['dynamic_check']) ? $data['dynamic_check'] : $this->settings['dynamic_check'];
 
 		$validity_check_str	= isset($data['validity_check']) ? $data['validity_check'] : $this->settings['validity_check'];
 
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('dynamic_check', 'dynamic_check'),
 			form_checkbox('dynamic_check', 'yes', $dynamic_check_str == 'yes')
 		);
 
-		$this->EE->table->add_row(
+		ee()->table->add_row(
 			lang('validity_check', 'validity_check'),
 			form_checkbox('validity_check', 'yes', $validity_check_str == 'yes')
 		);
@@ -104,7 +104,7 @@ class Isbn_field_ft extends EE_Fieldtype {
 	 */
 	function display_field($data)
 	{
-		$this->EE->lang->loadfile('isbn_field');
+		ee()->lang->loadfile('isbn_field');
 
 		$form = form_input(array(
 			'name'  => $this->field_name,
@@ -114,7 +114,7 @@ class Isbn_field_ft extends EE_Fieldtype {
 
 		if ($this->settings['dynamic_check'] == "yes")
 		{
-			$this->EE->javascript->output('
+			ee()->javascript->output('
 				window["isbn_'.$this->field_id.'"] = "";
 				function verify_isbn_'.$this->field_id.'()
 				{
@@ -298,7 +298,7 @@ class Isbn_field_ft extends EE_Fieldtype {
 	 */
 	function validate($data)
 	{
-		$this->EE->lang->loadfile('isbn_field');
+		ee()->lang->loadfile('isbn_field');
 
 		//if we need to validate the entered value
 		if ($this->settings['validity_check'] == "yes")
